@@ -56,23 +56,41 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         guard let button = statusItem.button else { return }
         let name: String
         if !guardObject.isRunning {
-            name = "exclamationmark.triangle"
+            name = "exclamationmark"
         } else if settings.enabled {
             name = "hand.raised"
         } else {
             name = "hand.raised.slash"
         }
-        let image = NSImage(systemSymbolName: name, accessibilityDescription: "TouchGuard")
-        image?.isTemplate = true
-        button.image = image
+        button.image = AppDelegate.boxedIcon(symbol: name)
+    }
+
+    /// The symbol drawn inside a rounded frame, so every state shares one outline.
+    private static func boxedIcon(symbol: String) -> NSImage? {
+        let configuration = NSImage.SymbolConfiguration(pointSize: 10, weight: .regular)
+        guard let glyph = NSImage(systemSymbolName: symbol, accessibilityDescription: "TouchGuard")?
+            .withSymbolConfiguration(configuration) else { return nil }
+
+        let image = NSImage(size: NSSize(width: 16, height: 16), flipped: false) { rect in
+            let frame = rect.insetBy(dx: 0.75, dy: 0.75)
+            let box = NSBezierPath(roundedRect: frame, xRadius: 3.5, yRadius: 3.5)
+            box.lineWidth = 1.2
+            NSColor.black.setStroke()
+            box.stroke()
+
+            let size = glyph.size
+            let origin = NSPoint(x: rect.midX - size.width / 2, y: rect.midY - size.height / 2)
+            glyph.draw(at: origin, from: .zero, operation: .sourceOver, fraction: 1)
+            return true
+        }
+        image.isTemplate = true
+        return image
     }
 
     /// Brief visual confirmation that something was actually swallowed.
     private func flash() {
         guard let button = statusItem.button else { return }
-        let image = NSImage(systemSymbolName: "hand.raised.fill", accessibilityDescription: "TouchGuard")
-        image?.isTemplate = true
-        button.image = image
+        button.image = AppDelegate.boxedIcon(symbol: "hand.raised.fill")
         flashTimer?.invalidate()
         flashTimer = Timer.scheduledTimer(withTimeInterval: 0.45, repeats: false) { [weak self] _ in
             self?.updateIcon()
