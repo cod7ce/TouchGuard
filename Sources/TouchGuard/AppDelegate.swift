@@ -67,14 +67,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     /// The symbol drawn inside a rounded frame, so every state shares one outline.
     private static func boxedIcon(symbol: String) -> NSImage? {
-        let configuration = NSImage.SymbolConfiguration(pointSize: 12.5, weight: .regular)
+        let configuration = NSImage.SymbolConfiguration(pointSize: 13.5, weight: .regular)
         guard let glyph = NSImage(systemSymbolName: symbol, accessibilityDescription: "TouchGuard")?
             .withSymbolConfiguration(configuration) else { return nil }
 
-        let image = NSImage(size: NSSize(width: 19, height: 19), flipped: false) { rect in
+        // 20pt is about the largest that fits the 22pt menu bar without being scaled down.
+        let image = NSImage(size: NSSize(width: 20, height: 20), flipped: false) { rect in
             let frame = rect.insetBy(dx: 0.85, dy: 0.85)
-            let box = NSBezierPath(roundedRect: frame, xRadius: 4.5, yRadius: 4.5)
-            box.lineWidth = 1.4
+            let box = NSBezierPath(roundedRect: frame, xRadius: 3, yRadius: 3)
+            box.lineWidth = 1.5
             NSColor.black.setStroke()
             box.stroke()
 
