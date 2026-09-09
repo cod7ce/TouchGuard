@@ -17,7 +17,7 @@
 
 ## 下载
 
-[Releases](https://github.com/cod7ce/TouchGuard/releases) 里有编译好的 `TouchGuard-0.1.0.zip`（universal，arm64 + x86_64）。
+[Releases](https://github.com/cod7ce/TouchGuard/releases) 里有编译好的 `TouchGuard-0.1.1.zip`（universal，arm64 + x86_64）。
 解压后拖进「应用程序」即可。它用开发者证书签名但未经 Apple 公证，别人下载后首次打开会被 Gatekeeper 拦下，
 右键点图标选「打开」，或到「系统设置 › 隐私与安全性」页面底部点「仍要打开」。自己编译则没有这个问题。
 
