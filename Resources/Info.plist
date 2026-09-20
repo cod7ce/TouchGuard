@@ -6,6 +6,8 @@
 	<string>TouchGuard</string>
 	<key>CFBundleExecutable</key>
 	<string>TouchGuard</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
 	<string>dev.dingnan.TouchGuard</string>
 	<key>CFBundleName</key>
