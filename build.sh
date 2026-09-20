@@ -7,11 +7,22 @@ set -euo pipefail
 cd "$(dirname "$0")"
 APP="build/TouchGuard.app"
 
-swift build -c release --arch arm64 --arch x86_64
+BUILD_FLAGS=(-c release --arch arm64 --arch x86_64)
+swift build "${BUILD_FLAGS[@]}"
+
+# Ask SwiftPM where it put the product rather than hardcoding a path: the
+# output directory has moved between toolchains, and a stale copy left behind
+# by an older one will happily be picked up and shipped.
+PRODUCT="$(swift build "${BUILD_FLAGS[@]}" --show-bin-path)/TouchGuard"
+NEWEST_SOURCE=$(find Sources -name '*.swift' -newer "$PRODUCT" -print -quit)
+if [ -n "$NEWEST_SOURCE" ]; then
+  echo "Build product is older than $NEWEST_SOURCE - refusing to package a stale binary." >&2
+  exit 1
+fi
 
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp .build/apple/Products/Release/TouchGuard "$APP/Contents/MacOS/TouchGuard"
+cp "$PRODUCT" "$APP/Contents/MacOS/TouchGuard"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 
