@@ -5,9 +5,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem!
     private var permissionTimer: Timer?
     private var flashTimer: Timer?
+    private var updateTimer: Timer?
 
     private let guardObject = InputGuard.shared
     private let settings = Settings.shared
+    private let updater = Updater.shared
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
@@ -27,6 +29,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             requestAccessibility()
         }
         updateIcon()
+        startUpdateChecks()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -50,6 +53,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
     }
 
+    // MARK: - Updates
+
+    private func startUpdateChecks() {
+        updater.onStateChange = { [weak self] in self?.updateIcon() }
+        // A launch-time check waits for the menu bar to settle, so a dialog
+        // never lands before the user can see where it came from.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+            self?.updater.checkInBackground()
+        }
+        // The updater itself keeps to one check a day; this only gives a
+        // long-running instance the chance to reach that point.
+        updateTimer = Timer.scheduledTimer(withTimeInterval: 6 * 60 * 60, repeats: true) { [weak self] _ in
+            self?.updater.checkInBackground()
+        }
+    }
+
     // MARK: - Status item
 
     private func updateIcon() {
@@ -63,6 +82,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             name = "hand.raised.slash"
         }
         button.image = AppDelegate.boxedIcon(symbol: name)
+        button.title = updater.isBusy ? " 更新中…" : ""
     }
 
     /// The symbol drawn inside a rounded frame, so every state shares one outline.
@@ -143,6 +163,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         addToggle(menu, title: "开机自动启动", isOn: launchAtLoginEnabled, action: #selector(toggleLaunchAtLogin))
 
         menu.addItem(.separator())
+        if updater.isBusy {
+            menu.addItem(disabledItem("正在更新…"))
+        } else {
+            menu.addItem(withTitle: "检查更新…", action: #selector(checkForUpdates), keyEquivalent: "")
+                .target = self
+        }
+        addToggle(menu, title: "自动检查更新", isOn: settings.automaticUpdateChecks, action: #selector(toggleAutomaticUpdates))
+
+        menu.addItem(.separator())
+        menu.addItem(disabledItem("版本 \(Updater.currentVersion)"))
         menu.addItem(withTitle: "退出 TouchGuard", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
     }
 
@@ -177,6 +207,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc private func toggleScroll() { settings.blockScroll.toggle() }
     @objc private func toggleModifierChords() { settings.allowModifierChords.toggle() }
     @objc private func toggleStrict() { settings.strictTrackpadOnly.toggle() }
+
+    @objc private func checkForUpdates() {
+        updater.checkNow()
+    }
+
+    @objc private func toggleAutomaticUpdates() {
+        settings.automaticUpdateChecks.toggle()
+    }
 
     @objc private func openAccessibilitySettings() {
         let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility")!

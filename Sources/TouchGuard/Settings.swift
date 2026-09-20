@@ -12,6 +12,9 @@ final class Settings {
         static let blockScroll = "blockScroll"
         static let allowModifierChords = "allowModifierChords"
         static let strictTrackpadOnly = "strictTrackpadOnly"
+        static let automaticUpdateChecks = "automaticUpdateChecks"
+        static let lastUpdateCheck = "lastUpdateCheck"
+        static let skippedVersion = "skippedVersion"
     }
 
     private let defaults = UserDefaults.standard
@@ -25,6 +28,7 @@ final class Settings {
             Key.blockScroll: true,
             Key.allowModifierChords: true,
             Key.strictTrackpadOnly: false,
+            Key.automaticUpdateChecks: true,
         ])
     }
 
@@ -67,6 +71,25 @@ final class Settings {
     var strictTrackpadOnly: Bool {
         get { defaults.bool(forKey: Key.strictTrackpadOnly) }
         set { defaults.set(newValue, forKey: Key.strictTrackpadOnly) }
+    }
+
+    /// Poll GitHub Releases in the background. Checking is the only thing that
+    /// happens on its own; installing always asks first.
+    var automaticUpdateChecks: Bool {
+        get { defaults.bool(forKey: Key.automaticUpdateChecks) }
+        set { defaults.set(newValue, forKey: Key.automaticUpdateChecks) }
+    }
+
+    /// Distant past when unset, so the first launch checks right away.
+    var lastUpdateCheck: Date {
+        get { defaults.object(forKey: Key.lastUpdateCheck) as? Date ?? .distantPast }
+        set { defaults.set(newValue, forKey: Key.lastUpdateCheck) }
+    }
+
+    /// A version the user dismissed for good; silent checks stay quiet about it.
+    var skippedVersion: String? {
+        get { defaults.string(forKey: Key.skippedVersion) }
+        set { defaults.set(newValue, forKey: Key.skippedVersion) }
     }
 
     var delay: CFTimeInterval { CFTimeInterval(delayMS) / 1000.0 }
