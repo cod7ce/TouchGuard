@@ -18,7 +18,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         ProcessInfo.processInfo.disableAutomaticTermination("Keeps the event tap installed")
         ProcessInfo.processInfo.disableSuddenTermination()
 
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        // squareLength, not variableLength: the icon is square, and the 36pt a
+        // variable item reserves is 14pt of a crowded menu bar spent on padding.
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         let menu = NSMenu()
         menu.delegate = self
         statusItem.menu = menu
@@ -74,7 +76,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func updateIcon() {
         guard let button = statusItem.button else { return }
         let name: String
-        if !guardObject.isRunning {
+        if updater.isBusy {
+            // Swapping the symbol rather than appending a title keeps the item
+            // one square, so an update never changes what it takes up.
+            name = "arrow.down"
+        } else if !guardObject.isRunning {
             name = "exclamationmark"
         } else if settings.enabled {
             name = "hand.raised"
@@ -82,7 +88,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             name = "hand.raised.slash"
         }
         button.image = AppDelegate.boxedIcon(symbol: name)
-        button.title = updater.isBusy ? " 更新中…" : ""
     }
 
     /// The symbol drawn inside a rounded frame, so every state shares one outline.
