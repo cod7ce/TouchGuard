@@ -1,11 +1,12 @@
 #!/bin/bash
-# Builds TouchGuard.app into ./build.
+# 将应用构建到 ./build，包名使用配置中的显示名称。
 # A stable code signature matters here: macOS ties the Accessibility grant to the
 # signature, so an ad-hoc rebuild would make you re-approve the app every time.
 set -euo pipefail
 
 cd "$(dirname "$0")"
-APP="build/TouchGuard.app"
+APP_NAME=$(/usr/libexec/PlistBuddy -c "Print CFBundleDisplayName" Resources/Info.plist)
+APP="build/$APP_NAME.app"
 
 BUILD_FLAGS=(-c release --arch arm64 --arch x86_64)
 swift build "${BUILD_FLAGS[@]}"

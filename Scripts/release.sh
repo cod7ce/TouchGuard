@@ -11,27 +11,29 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" Resources/Info.plist)
+APP_NAME=$(/usr/libexec/PlistBuddy -c "Print CFBundleDisplayName" Resources/Info.plist)
+APP="build/$APP_NAME.app"
 TAG="v$VERSION"
 ZIP="build/TouchGuard-$VERSION.zip"
 
 ./build.sh
 
 rm -f "$ZIP"
-ditto -c -k --sequesterRsrc --keepParent build/TouchGuard.app "$ZIP"
+ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
 
 # Unpack into a scratch copy and re-verify it exactly as the updater will,
 # so a broken archive is caught here rather than on someone's machine.
-REQUIREMENT=$(codesign -d -r- build/TouchGuard.app 2>/dev/null | sed -n 's/^designated => //p')
+REQUIREMENT=$(codesign -d -r- "$APP" 2>/dev/null | sed -n 's/^designated => //p')
 CHECK=$(mktemp -d)
 trap 'rm -rf "$CHECK"' EXIT
 ditto -x -k "$ZIP" "$CHECK"
 codesign --verify --deep --strict --all-architectures \
-  -R="$REQUIREMENT" "$CHECK/TouchGuard.app"
+  -R="$REQUIREMENT" "$CHECK/$APP_NAME.app"
 
 echo
 echo "Built $ZIP ($(du -h "$ZIP" | cut -f1)), signature verifies against:"
 echo "  $REQUIREMENT"
 echo
 echo "To publish:"
-echo "  git tag -a $TAG -m 'TouchGuard $VERSION' && git push origin main $TAG"
-echo "  gh release create $TAG $ZIP --title 'TouchGuard $VERSION' --notes-file <notes>"
+echo "  git tag -a $TAG -m '$APP_NAME $VERSION' && git push origin main $TAG"
+echo "  gh release create $TAG $ZIP --title '$APP_NAME $VERSION' --notes-file <notes>"

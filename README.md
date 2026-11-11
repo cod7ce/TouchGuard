@@ -18,7 +18,7 @@
 ## 下载
 
 [Releases](https://github.com/cod7ce/TouchGuard/releases) 里有编译好的 `TouchGuard-0.2.2.zip`（universal，arm64 + x86_64）。
-解压后拖进「应用程序」即可。它用开发者证书签名但未经 Apple 公证，别人下载后首次打开会被 Gatekeeper 拦下，
+解压后将 `TouchGuard · ONES.app` 拖进「应用程序」即可。它用开发者证书签名但未经 Apple 公证，别人下载后首次打开会被 Gatekeeper 拦下，
 右键点图标选「打开」，或到「系统设置 › 隐私与安全性」页面底部点「仍要打开」。自己编译则没有这个问题。
 
 ## 自动更新
@@ -37,7 +37,7 @@ designated requirement 锁死了二进制哈希，任何新版本都不可能匹
 ## 构建
 
 ```
-./build.sh                      # 产物在 build/TouchGuard.app
+./build.sh                      # 产物在 build/TouchGuard · ONES.app
 ./Scripts/release.sh            # 再打出 build/TouchGuard-<版本>.zip 并自检签名
 swift Scripts/make-icon.swift   # 重新生成 Resources/AppIcon.icns
 ```
@@ -49,7 +49,7 @@ swift Scripts/make-icon.swift   # 重新生成 Resources/AppIcon.icns
 
 ## 首次运行
 
-1. `open build/TouchGuard.app`
+1. `open "build/TouchGuard · ONES.app"`
 2. 弹出授权提示后，在「系统设置 › 隐私与安全性 › 辅助功能」里勾选 TouchGuard · ONES。
 3. 授权后无需重启，菜单栏图标会从警告三角变成手掌图标。
 
@@ -58,7 +58,7 @@ swift Scripts/make-icon.swift   # 重新生成 Resources/AppIcon.icns
 ## 诊断
 
 ```
-./build/TouchGuard.app/Contents/MacOS/TouchGuard --diagnose
+"./build/TouchGuard · ONES.app/Contents/MacOS/TouchGuard" --diagnose
 ```
 
 打印每个指针事件的来源判定，用触控板和外接鼠标各点几下，即可确认识别是否准确。
