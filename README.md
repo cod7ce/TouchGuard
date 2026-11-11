@@ -1,4 +1,4 @@
-# TouchGuard
+# TouchGuard · ONES
 
 打字时自动屏蔽触控板，防止手掌误触导致光标乱跳、误点击。macOS 菜单栏常驻小工具。
 
@@ -17,7 +17,7 @@
 
 ## 下载
 
-[Releases](https://github.com/cod7ce/TouchGuard/releases) 里有编译好的 `TouchGuard-0.2.1.zip`（universal，arm64 + x86_64）。
+[Releases](https://github.com/cod7ce/TouchGuard/releases) 里有编译好的 `TouchGuard-0.2.2.zip`（universal，arm64 + x86_64）。
 解压后拖进「应用程序」即可。它用开发者证书签名但未经 Apple 公证，别人下载后首次打开会被 Gatekeeper 拦下，
 右键点图标选「打开」，或到「系统设置 › 隐私与安全性」页面底部点「仍要打开」。自己编译则没有这个问题。
 
@@ -50,7 +50,7 @@ swift Scripts/make-icon.swift   # 重新生成 Resources/AppIcon.icns
 ## 首次运行
 
 1. `open build/TouchGuard.app`
-2. 弹出授权提示后，在「系统设置 › 隐私与安全性 › 辅助功能」里勾选 TouchGuard。
+2. 弹出授权提示后，在「系统设置 › 隐私与安全性 › 辅助功能」里勾选 TouchGuard · ONES。
 3. 授权后无需重启，菜单栏图标会从警告三角变成手掌图标。
 
 菜单里可调：启用/暂停、停用时长（200–1000 毫秒）、拦截内容（点击/移动/滚动）、开机自启、自动检查更新。

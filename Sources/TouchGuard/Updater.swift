@@ -80,7 +80,7 @@ final class Updater {
     private func presentUpToDate() {
         let alert = NSAlert()
         alert.messageText = "已是最新版本"
-        alert.informativeText = "TouchGuard \(Self.currentVersion) 就是当前发布的最新版本。"
+        alert.informativeText = "TouchGuard · ONES \(Self.currentVersion) 就是当前发布的最新版本。"
         alert.addButton(withTitle: "好")
         show(alert)
     }

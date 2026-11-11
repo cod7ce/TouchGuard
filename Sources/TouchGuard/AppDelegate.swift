@@ -93,7 +93,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     /// The symbol drawn inside a rounded frame, so every state shares one outline.
     private static func boxedIcon(symbol: String) -> NSImage? {
         let configuration = NSImage.SymbolConfiguration(pointSize: 13.5, weight: .regular)
-        guard let glyph = NSImage(systemSymbolName: symbol, accessibilityDescription: "TouchGuard")?
+        guard let glyph = NSImage(systemSymbolName: symbol, accessibilityDescription: "TouchGuard · ONES")?
             .withSymbolConfiguration(configuration) else { return nil }
 
         // 20pt is about the largest that fits the 22pt menu bar without being scaled down.
@@ -135,7 +135,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             menu.addItem(.separator())
         } else {
             let state = settings.enabled ? "运行中" : "已暂停"
-            menu.addItem(disabledItem("TouchGuard · \(state)"))
+            menu.addItem(disabledItem("TouchGuard · ONES · \(state)"))
             menu.addItem(disabledItem("已拦截 \(guardObject.blockedClicks) 次点击 / \(guardObject.blockedOther) 次滑动"))
             menu.addItem(.separator())
         }
@@ -178,7 +178,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         menu.addItem(.separator())
         menu.addItem(disabledItem("版本 \(Updater.currentVersion)"))
-        menu.addItem(withTitle: "退出 TouchGuard", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        menu.addItem(withTitle: "退出 TouchGuard · ONES", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
     }
 
     private func disabledItem(_ title: String) -> NSMenuItem {

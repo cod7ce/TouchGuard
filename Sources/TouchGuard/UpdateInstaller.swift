@@ -21,12 +21,12 @@ enum UpdateError: LocalizedError {
         case .noDownload(let tag):
             return "发布 \(tag) 里没有找到 .zip 附件。"
         case .noAppInArchive:
-            return "下载的压缩包里没有 TouchGuard.app。"
+            return "下载的压缩包里没有 TouchGuard · ONES 应用。"
         case .unsigned:
             return "下载的版本没有代码签名，已拒绝安装。"
         case .adHocSigned:
             return """
-            当前这份 TouchGuard 是临时（ad-hoc）签名的，无法校验更新来源，已拒绝自动更新。
+            当前这份 TouchGuard · ONES 是临时（ad-hoc）签名的，无法校验更新来源，已拒绝自动更新。
             请手动下载安装。
             """
         case .security(let step, let status):

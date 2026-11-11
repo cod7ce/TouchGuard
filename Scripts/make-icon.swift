@@ -21,7 +21,7 @@ let bottomColor = NSColor(srgbRed: 0.09, green: 0.29, blue: 0.83, alpha: 1)
 
 func glyph(height: CGFloat) -> NSImage {
     let configuration = NSImage.SymbolConfiguration(pointSize: height, weight: .regular)
-    guard let symbol = NSImage(systemSymbolName: symbolName, accessibilityDescription: "TouchGuard")?
+    guard let symbol = NSImage(systemSymbolName: symbolName, accessibilityDescription: "TouchGuard · ONES")?
         .withSymbolConfiguration(configuration) else {
         FileHandle.standardError.write(Data("No system symbol named \(symbolName)\n".utf8))
         exit(1)
